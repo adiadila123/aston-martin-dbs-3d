@@ -100,7 +100,8 @@ const progressPercent = document.getElementById('progress-percent');
 
 let carModel = null;
 const paintMeshes = [];
-let originalPaintColor = new THREE.Color(0x9a0a0a);
+const defaultPaintColor = new THREE.Color('#141416');
+let originalPaintColor = new THREE.Color(0x141416);
 
 gltfLoader.load(
     'assets/scene-v5.glb',
@@ -115,9 +116,12 @@ gltfLoader.load(
                     child.material.envMapIntensity = 1.35;
                     if (child.material.name && (child.material.name.includes('Paint') || child.material.name.includes('paint'))) {
                         paintMeshes.push(child);
-                        if (child.material.color) {
-                            originalPaintColor.copy(child.material.color);
-                        }
+                        // Apply default stealth Obsidian Black Satin Matte
+                        child.material.color.copy(defaultPaintColor);
+                        child.material.roughness = 0.52;
+                        child.material.metalness = 0.35;
+                        child.material.clearcoat = 0.0;
+                        child.material.needsUpdate = true;
                     }
                 }
             }
@@ -1124,13 +1128,13 @@ if (btnStudioReset) {
         if (studioSidebar) studioSidebar.classList.remove('collapsed');
         if (btnExpandSidebar) btnExpandSidebar.classList.remove('visible');
 
-        // Reset colour to Hyper Red
-        const firstSwatch = colourSwatches[0];
-        if (firstSwatch) firstSwatch.click();
+        // Reset colour to Obsidian Black
+        const blackSwatch = document.querySelector('.colour-swatch[data-name="Obsidian Black"]') || colourSwatches[2];
+        if (blackSwatch) blackSwatch.click();
 
-        // Reset finish to High Gloss
-        const firstFinish = finishButtons[0];
-        if (firstFinish) firstFinish.click();
+        // Reset finish to Satin Matte
+        const matteFinish = document.querySelector('.pill-btn[data-finish="matte"]');
+        if (matteFinish) matteFinish.click();
 
         // Reset light to Showroom
         const firstLight = lightButtons[0];
