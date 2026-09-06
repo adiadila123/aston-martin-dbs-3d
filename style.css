@@ -403,32 +403,47 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    max-width: 1100px;
+    max-width: 850px;
     margin: 0 auto;
     z-index: 10;
 }
 
 .hero-header-block .british-badge {
-    margin-bottom: 14px;
+    margin-bottom: 8px;
+    padding: 5px 14px;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
 }
 
 .hero-header-block h1 {
-    font-size: clamp(2.4rem, 5.2vw, 4.6rem);
-    font-weight: 900;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-    margin-bottom: 12px;
-    background: linear-gradient(180deg, #ffffff 40%, rgba(255, 255, 255, 0.65) 100%);
+    font-size: clamp(1.6rem, 3.2vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+    background: linear-gradient(180deg, #ffffff 40%, rgba(255, 255, 255, 0.75) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
 }
 
 .hero-header-block .hero-desc {
-    font-size: clamp(0.95rem, 1.4vw, 1.2rem);
-    max-width: 660px;
-    margin: 0 auto 16px;
-    line-height: 1.6;
+    font-size: clamp(0.85rem, 1.1vw, 1.0rem);
+    max-width: 560px;
+    margin: 0 auto 10px;
+    line-height: 1.5;
+    opacity: 0.85;
+}
+
+.hero-header-block .hero-cta {
+    margin-top: 10px;
+    gap: 12px;
+}
+
+.hero-header-block .hero-cta .btn-primary,
+.hero-header-block .hero-cta .btn-secondary {
+    padding: 9px 20px;
+    font-size: 0.82rem;
 }
 
 .hero-bottom-block {
@@ -437,8 +452,8 @@ body {
     align-items: center;
     width: 100%;
     z-index: 10;
-    gap: 14px;
-    margin-bottom: 8px;
+    gap: 12px;
+    margin-bottom: 6px;
 }
 
 .hero-bottom-block .hero-specs-bar {
@@ -491,35 +506,35 @@ body {
 }
 
 .section h1 {
-    font-size: clamp(2.8rem, 7vw, 5.8rem);
-    font-weight: 900;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-    margin-bottom: 20px;
+    font-size: clamp(2.0rem, 4.5vw, 3.6rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
     background: linear-gradient(180deg, #ffffff 40%, rgba(255, 255, 255, 0.6) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
 }
 
 .section h2 {
-    font-size: clamp(2.2rem, 5vw, 4.2rem);
+    font-size: clamp(1.75rem, 3.6vw, 2.75rem);
     font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin-bottom: 16px;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    margin-bottom: 12px;
     background: linear-gradient(180deg, #ffffff 50%, rgba(255, 255, 255, 0.65) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    text-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
 }
 
 .section-desc {
-    font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+    font-size: clamp(0.9rem, 1.25vw, 1.1rem);
     font-weight: 400;
-    line-height: 1.7;
+    line-height: 1.6;
     color: var(--text-muted);
-    max-width: 720px;
+    max-width: 620px;
     margin: 0 auto;
     text-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
 }

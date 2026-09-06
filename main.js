@@ -28,7 +28,7 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x08080a);
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 0.95, 3.65);
+camera.position.set(0, 0.95, 4.15);
 
 const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -174,7 +174,7 @@ gsap.registerPlugin(ScrollTrigger);
 const cameraCoords = {
     x: 0,
     y: 0.95,
-    z: 3.65,
+    z: 4.15,
     lookX: 0,
     lookY: 0.35,
     lookZ: 0,
@@ -194,9 +194,9 @@ const mainTimeline = gsap.timeline({
 mainTimeline
     // 1 -> 2: Transition to Aerodynamics (Side profile & front wing vents)
     .to(cameraCoords, {
-        x: 3.4,
-        y: 1.05,
-        z: 2.4,
+        x: 3.5,
+        y: 1.1,
+        z: 2.8,
         lookX: 0,
         lookY: 0.35,
         lookZ: 0,
@@ -205,9 +205,9 @@ mainTimeline
     })
     // 2 -> 3: Transition to Performance (Front 3/4 stance)
     .to(cameraCoords, {
-        x: -2.3,
-        y: 0.9,
-        z: 3.2,
+        x: -2.6,
+        y: 0.95,
+        z: 3.6,
         lookX: 0,
         lookY: 0.35,
         lookZ: 0.2,
@@ -216,9 +216,9 @@ mainTimeline
     })
     // 3 -> 4: Transition to Craftsmanship (Rear 3/4 view)
     .to(cameraCoords, {
-        x: 3.2,
+        x: 3.4,
         y: 1.45,
-        z: -3.8,
+        z: -4.0,
         lookX: 0,
         lookY: 0.3,
         lookZ: 0,
@@ -228,8 +228,8 @@ mainTimeline
     // 4 -> 5: Transition to Specifications (Cinematic high-angle overview)
     .to(cameraCoords, {
         x: 0,
-        y: 2.6,
-        z: 3.9,
+        y: 2.7,
+        z: 4.2,
         lookX: 0,
         lookY: 0.3,
         lookZ: 0,
@@ -813,7 +813,7 @@ const btnExpandSidebar = document.getElementById('btn-expand-sidebar');
 const studioZoomRange = document.getElementById('studio-zoom-range');
 const activeZoomNameEl = document.getElementById('active-zoom-name');
 const zoomPresetButtons = document.querySelectorAll('.zoom-presets .pill-btn');
-let studioDistance = 3.65;
+let studioDistance = 4.15;
 
 function openStudioModal() {
     isStudioOpen = true;
@@ -1118,7 +1118,7 @@ angleButtons.forEach(btn => {
 if (btnStudioReset) {
     btnStudioReset.addEventListener('click', () => {
         // Reset distance to Standard
-        setStudioDistance(3.65, true);
+        setStudioDistance(4.15, true);
 
         // Expand sidebar if collapsed
         if (studioSidebar) studioSidebar.classList.remove('collapsed');
