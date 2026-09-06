@@ -175,12 +175,13 @@ gltfLoader.load(
 // ==========================================
 gsap.registerPlugin(ScrollTrigger);
 
+const isMobilePortrait = (window.innerWidth / window.innerHeight) < 0.75;
 const cameraCoords = {
     x: 0,
-    y: 0.85,
-    z: 4.15,
+    y: isMobilePortrait ? 0.96 : 0.85,
+    z: isMobilePortrait ? 4.30 : 4.15,
     lookX: 0,
-    lookY: 0.18,
+    lookY: isMobilePortrait ? 0.28 : 0.18,
     lookZ: 0,
     carRotY: 0
 };
@@ -586,6 +587,82 @@ const header = document.getElementById('top-header');
 const navLinks = document.querySelectorAll('.nav-link');
 const sections = document.querySelectorAll('.section');
 
+// Mobile Navigation Elements
+const btnMobileToggle = document.getElementById('btn-mobile-toggle');
+const mobileNavOverlay = document.getElementById('mobile-nav');
+const btnMobileClose = document.getElementById('btn-mobile-close');
+const mobileNavBackdrop = document.getElementById('mobile-nav-backdrop');
+const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+function openMobileNav() {
+    if (!mobileNavOverlay) return;
+    mobileNavOverlay.classList.add('active');
+    mobileNavOverlay.setAttribute('aria-hidden', 'false');
+    if (btnMobileToggle) {
+        btnMobileToggle.classList.add('active');
+        btnMobileToggle.setAttribute('aria-expanded', 'true');
+    }
+    lenis.stop();
+}
+
+function closeMobileNav() {
+    if (!mobileNavOverlay) return;
+    mobileNavOverlay.classList.remove('active');
+    mobileNavOverlay.setAttribute('aria-hidden', 'true');
+    if (btnMobileToggle) {
+        btnMobileToggle.classList.remove('active');
+        btnMobileToggle.setAttribute('aria-expanded', 'false');
+    }
+    lenis.start();
+}
+
+if (btnMobileToggle) {
+    btnMobileToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (mobileNavOverlay && mobileNavOverlay.classList.contains('active')) {
+            closeMobileNav();
+        } else {
+            openMobileNav();
+        }
+    });
+}
+
+if (btnMobileClose) {
+    btnMobileClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeMobileNav();
+    });
+}
+
+if (mobileNavBackdrop) {
+    mobileNavBackdrop.addEventListener('click', closeMobileNav);
+}
+
+mobileNavLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeMobileNav();
+        const targetId = link.getAttribute('href');
+        if (targetId === '#home' || targetId === '#overview') {
+            lenis.scrollTo(0, {
+                duration: 1.3,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+            });
+            setActiveNav('home');
+            showHeroContent(true);
+            return;
+        }
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+            lenis.scrollTo(targetElement, {
+                offset: -40,
+                duration: 1.3,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+            });
+        }
+    });
+});
+
 window.addEventListener('scroll', () => {
     if (window.scrollY > 40) {
         header.classList.add('scrolled');
@@ -608,6 +685,14 @@ sections.forEach((section) => {
 
 function setActiveNav(id) {
     navLinks.forEach((link) => {
+        const href = link.getAttribute('href');
+        if (href === `#${id}` || ((id === 'home' || id === 'overview') && (href === '#home' || href === '#overview'))) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+    mobileNavLinks.forEach((link) => {
         const href = link.getAttribute('href');
         if (href === `#${id}` || ((id === 'home' || id === 'overview') && (href === '#home' || href === '#overview'))) {
             link.classList.add('active');
@@ -643,18 +728,18 @@ navLinks.forEach((link) => {
 });
 
 // Click logo to go home (scroll smoothly to absolute top)
-const brandLogo = document.querySelector('.nav-brand-group');
-if (brandLogo) {
+document.querySelectorAll('.nav-brand-group').forEach((brandLogo) => {
     brandLogo.addEventListener('click', (e) => {
         e.preventDefault();
+        closeMobileNav();
         lenis.scrollTo(0, {
-            duration: 1.5,
+            duration: 1.4,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
         });
         setActiveNav('home');
         showHeroContent(true);
     });
-}
+});
 
 // All other anchor links with smooth scroll
 document.querySelectorAll('a[href^="#"]:not(.nav-brand-group):not(.nav-link)').forEach((anchor) => {
@@ -680,6 +765,7 @@ const openModalButtons = document.querySelectorAll('.btn-open-modal');
 openModalButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
         e.preventDefault();
+        closeMobileNav();
         if (enquiryModal) {
             enquiryModal.classList.add('active');
             enquiryModal.setAttribute('aria-hidden', 'false');
@@ -763,14 +849,44 @@ function animate() {
 animate();
 
 // ==========================================
-// 10. RESIZE HANDLER
+// 10. DYNAMIC RESPONSIVE CAMERA & RESIZE HANDLER
 // ==========================================
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
+function updateResponsiveCamera() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const aspect = width / height;
+
+    camera.aspect = aspect;
+
+    // Adapt vertical FOV based on aspect ratio so car is never cropped horizontally on mobile/tablets
+    if (aspect < 0.65) {
+        // Narrow smartphone portrait (e.g. iPhone portrait 9:19.5)
+        camera.fov = 58;
+    } else if (aspect < 0.95) {
+        // Standard tablet portrait / foldable
+        camera.fov = 52;
+    } else if (aspect < 1.35) {
+        // Square or 4:3 screen
+        camera.fov = 48;
+    } else {
+        // Widescreen monitor
+        camera.fov = 45;
+    }
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    if (window.ScrollTrigger) {
+        ScrollTrigger.refresh();
+    }
+}
+
+window.addEventListener('resize', updateResponsiveCamera);
+window.addEventListener('orientationchange', () => {
+    setTimeout(updateResponsiveCamera, 150);
 });
+updateResponsiveCamera();
 
 // ==========================================
 // 11. MINIMALIST GO TO TOP BUTTON
@@ -821,6 +937,7 @@ let studioDistance = 4.15;
 
 function openStudioModal() {
     isStudioOpen = true;
+    closeMobileNav();
     document.body.classList.add('studio-open');
     if (studioModal) {
         studioModal.classList.add('active');
@@ -871,25 +988,71 @@ if (btnStudioClose) {
     });
 }
 
-// Close studio with Escape key
+// Close modals or mobile nav with Escape key
 window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isStudioOpen) {
-        closeStudioModal();
+    if (e.key === 'Escape') {
+        if (isStudioOpen) closeStudioModal();
+        if (enquiryModal && enquiryModal.classList.contains('active')) {
+            enquiryModal.classList.remove('active');
+            enquiryModal.setAttribute('aria-hidden', 'true');
+        }
+        closeMobileNav();
     }
 });
 
-// Interactive 360° Drag to Spin Car in Studio Mode
+// Interactive 360° Drag & Multi-Touch Pinch-to-Zoom in Studio Mode
+const activePointers = new Map();
+let initialPinchDistance = 0;
+let pinchStartZoom = 3.65;
+
 if (studioModal) {
+    // Dynamic mobile touch hint
+    const studioHint = document.getElementById('studio-hint');
+    if (studioHint && ('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
+        studioHint.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Touch &amp; drag 360&deg; &bull; Pinch to zoom</span>
+        `;
+    }
+
     studioModal.addEventListener('pointerdown', (e) => {
         // Do not trigger drag when clicking inside settings sidebar, topbar or expand button
         if (e.target.closest('.studio-sidebar') || e.target.closest('.studio-topbar') || e.target.closest('.studio-expand-btn')) return;
-        isStudioDragging = true;
-        prevPointerX = e.clientX;
-        prevPointerY = e.clientY;
+        
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+        if (activePointers.size === 1) {
+            isStudioDragging = true;
+            prevPointerX = e.clientX;
+            prevPointerY = e.clientY;
+        } else if (activePointers.size === 2) {
+            isStudioDragging = false;
+            const pts = Array.from(activePointers.values());
+            initialPinchDistance = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+            pinchStartZoom = studioDistance;
+        }
     });
 
     window.addEventListener('pointermove', (e) => {
-        if (!isStudioDragging || !isStudioOpen || !carModel) return;
+        if (!isStudioOpen) return;
+        if (activePointers.has(e.pointerId)) {
+            activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        }
+
+        // 2 fingers pinch to zoom on touch screens
+        if (activePointers.size === 2 && initialPinchDistance > 0) {
+            const pts = Array.from(activePointers.values());
+            const currentDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+            const scale = initialPinchDistance / (currentDist || 1);
+            const newZoom = Math.max(2.2, Math.min(5.6, pinchStartZoom * scale));
+            setStudioDistance(newZoom, false);
+            return;
+        }
+
+        // Single finger / mouse 360 drag
+        if (!isStudioDragging || !carModel) return;
         const deltaX = e.clientX - prevPointerX;
         const deltaY = e.clientY - prevPointerY;
         prevPointerX = e.clientX;
@@ -899,9 +1062,21 @@ if (studioModal) {
         cameraCoords.y = Math.max(0.4, Math.min(2.4, cameraCoords.y - deltaY * 0.004));
     });
 
-    window.addEventListener('pointerup', () => {
-        isStudioDragging = false;
-    });
+    const finishPointer = (e) => {
+        activePointers.delete(e.pointerId);
+        if (activePointers.size === 0) {
+            isStudioDragging = false;
+            initialPinchDistance = 0;
+        } else if (activePointers.size === 1) {
+            const pt = Array.from(activePointers.values())[0];
+            prevPointerX = pt.x;
+            prevPointerY = pt.y;
+            isStudioDragging = true;
+        }
+    };
+
+    window.addEventListener('pointerup', finishPointer);
+    window.addEventListener('pointercancel', finishPointer);
 }
 
 // Collapsible Studio Sidebar

@@ -86,15 +86,74 @@
             <div class="nav-actions">
                 <button class="btn-secondary btn-open-modal" id="btn-open-enquiry">Enquire</button>
                 <button class="btn-primary btn-open-studio" id="btn-open-studio">
-                    <span>Studio &amp; Settings</span>
+                    <span class="btn-studio-text">Studio &amp; Settings</span>
+                    <span class="btn-studio-compact-text">Studio</span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="3"></circle>
                         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                     </svg>
                 </button>
+                <button class="mobile-toggle" id="btn-mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
             </div>
         </div>
     </header>
+
+    <!-- Luxury Mobile Navigation Drawer Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav" aria-hidden="true">
+        <div class="mobile-nav-backdrop" id="mobile-nav-backdrop"></div>
+        <div class="mobile-nav-drawer glass-panel">
+            <div class="mobile-nav-header">
+                <div class="nav-brand-group">
+                    <svg class="brand-wings" viewBox="0 0 100 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M50 24C65 14 85 10 98 12C95 18 80 28 50 32C20 28 5 18 2 12C15 10 35 14 50 24Z" fill="rgba(255,255,255,0.85)" stroke="rgba(212,175,55,0.8)" stroke-width="1.2"/>
+                        <path d="M50 24C60 18 78 16 92 18C88 23 75 29 50 31C25 29 12 23 8 18C22 16 40 18 50 24Z" fill="rgba(20,20,26,0.9)"/>
+                        <circle cx="50" cy="24" r="3.5" fill="#d4af37"/>
+                    </svg>
+                    <div class="brand-title-wrap">
+                        <span class="brand-name">Aston Martin</span>
+                        <span class="brand-sub">DBS Superleggera</span>
+                    </div>
+                </div>
+                <button class="mobile-nav-close" id="btn-mobile-close" aria-label="Close menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="mobile-nav-body">
+                <ul class="mobile-nav-menu">
+                    <li><a href="#home" class="mobile-nav-link active"><span class="nav-idx">01</span><span>Home</span></a></li>
+                    <li><a href="#aerodynamics" class="mobile-nav-link"><span class="nav-idx">02</span><span>Aerodynamics</span></a></li>
+                    <li><a href="#performance" class="mobile-nav-link"><span class="nav-idx">03</span><span>Performance</span></a></li>
+                    <li><a href="#craftsmanship" class="mobile-nav-link"><span class="nav-idx">04</span><span>Craftsmanship</span></a></li>
+                    <li><a href="#specifications" class="mobile-nav-link"><span class="nav-idx">05</span><span>Specifications</span></a></li>
+                </ul>
+
+                <div class="mobile-drawer-actions">
+                    <button class="btn-primary mobile-studio-action btn-open-studio">
+                        <span>Launch 3D Studio</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </button>
+                    <button class="btn-secondary mobile-enquiry-action btn-open-modal">
+                        <span>Request Consultation</span>
+                    </button>
+                </div>
+
+                <div class="mobile-drawer-footer">
+                    <span class="mobile-footer-tag">Aston Martin Lagonda &bull; Gaydon, England</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- 3D WebGL Canvas in Background -->
     <div id="webgl-container"></div>
