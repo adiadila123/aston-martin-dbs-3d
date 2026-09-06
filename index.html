@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aston Martin DBS Superleggera | Official Grand Tourer</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Three.js ES Modules Import Map -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+    </script>
+
+    <!-- GSAP & Lenis Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loader-overlay">
+        <div class="loader-spinner-wrapper">
+            <div class="loader-ring"></div>
+        </div>
+        <div class="loader-title">Aston Martin</div>
+        <div class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <div id="progress-percent" class="loader-percent">Preparing 3D Experience...</div>
+    </div>
+
+    <!-- Transparent Frosted Top Header / Menu Bar -->
+    <header class="top-header" id="top-header">
+        <div class="nav-container">
+            <!-- Brand -->
+            <a href="#home" class="nav-brand-group" title="Back to Home">
+                <svg class="brand-wings" viewBox="0 0 100 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 24C65 14 85 10 98 12C95 18 80 28 50 32C20 28 5 18 2 12C15 10 35 14 50 24Z" fill="rgba(255,255,255,0.85)" stroke="rgba(212,175,55,0.8)" stroke-width="1.2"/>
+                    <path d="M50 24C60 18 78 16 92 18C88 23 75 29 50 31C25 29 12 23 8 18C22 16 40 18 50 24Z" fill="rgba(20,20,26,0.9)"/>
+                    <circle cx="50" cy="24" r="3.5" fill="#d4af37"/>
+                </svg>
+                <div class="brand-title-wrap">
+                    <span class="brand-name">Aston Martin</span>
+                    <span class="brand-sub">DBS Superleggera</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav>
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#aerodynamics" class="nav-link">Aerodynamics</a></li>
+                    <li><a href="#performance" class="nav-link">Performance</a></li>
+                    <li><a href="#craftsmanship" class="nav-link">Craftsmanship</a></li>
+                    <li><a href="#specifications" class="nav-link">Specifications</a></li>
+                </ul>
+            </nav>
+
+            <!-- Actions -->
+            <div class="nav-actions">
+                <button class="btn-secondary btn-open-modal" id="btn-open-enquiry">Enquire</button>
+                <button class="btn-primary btn-open-studio" id="btn-open-studio">
+                    <span>Studio &amp; Settings</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3D WebGL Canvas in Background -->
+    <div id="webgl-container"></div>
+
+    <!-- Cinematic Landing Page Sections (All Glassmorphic / Transparent) -->
+    <main class="content">
+
+        <!-- Section 1: Grand Hero Home Page -->
+        <section class="section section-overview section-home" id="home">
+            <span id="overview" style="position: absolute; top: 0; left: 0; pointer-events: none;"></span>
+            <div class="hero-header-block">
+                <div class="british-badge">
+                    <svg class="union-jack-icon" viewBox="0 0 60 30">
+                        <clipPath id="s"><path d="M0,0 v30 h60 v-30 z"/></clipPath>
+                        <clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath>
+                        <g clip-path="url(#s)">
+                            <path d="M0,0 v30 h60 v-30 z" fill="#012169"/>
+                            <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+                            <path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#C8102E" stroke-width="4"/>
+                            <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
+                            <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
+                        </g>
+                    </svg>
+                    <span>Handcrafted in Gaydon, England</span>
+                </div>
+                
+                <h1 class="hero-title">Aston Martin DBS Superleggera</h1>
+                <p class="section-desc hero-desc">The ultimate production Aston Martin. Savage power cloaked in exquisite British elegance. Sculpted to command the road and stir the soul.</p>
+                
+                <div class="cta-group hero-cta">
+                    <a href="#aerodynamics" class="btn-primary">Explore Dynamics</a>
+                    <button class="btn-secondary btn-open-modal">Request Consultation</button>
+                </div>
+            </div>
+
+            <div class="hero-bottom-block">
+                <div class="glass-panel hero-specs-bar">
+                    <div class="hero-spec-item">
+                        <span class="hero-spec-val">715 BHP</span>
+                        <span class="hero-spec-label">Twin-Turbo V12</span>
+                    </div>
+                    <div class="hero-spec-item">
+                        <span class="hero-spec-val">900 Nm</span>
+                        <span class="hero-spec-label">Peak Torque</span>
+                    </div>
+                    <div class="hero-spec-item">
+                        <span class="hero-spec-val">3.4 sec</span>
+                        <span class="hero-spec-label">0–62 MPH</span>
+                    </div>
+                    <div class="hero-spec-item">
+                        <span class="hero-spec-val">211 MPH</span>
+                        <span class="hero-spec-label">Maximum Speed</span>
+                    </div>
+                </div>
+
+                <div class="scroll-indicator">
+                    <div class="mouse-icon">
+                        <div class="mouse-wheel"></div>
+                    </div>
+                    <span>Scroll to explore</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Aerodynamics -->
+        <section class="section section-aerodynamics" id="aerodynamics">
+            <div class="section-inner">
+                <div class="british-badge">Aerodynamic Architecture</div>
+                <h2>Sculpted by the Wind</h2>
+                <p class="section-desc">Harnessing airflow to generate 180 kg of genuine aerodynamic downforce at 211 MPH — the highest figure recorded by an Aston Martin production series grand tourer.</p>
+
+                <div class="cards-grid-3">
+                    <div class="glass-panel feature-card">
+                        <div>
+                            <div class="card-num">Feature 01</div>
+                            <h3>Curlicue Venting</h3>
+                            <p>Derived straight from Le Mans prototype racing, deep curlicue vents extract turbulent high-pressure air from the front wheel arches to eradicate front-end lift.</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel feature-card">
+                        <div>
+                            <div class="card-num">Feature 02</div>
+                            <h3>Aeroblade II™</h3>
+                            <p>An Aston Martin world first: air is ducted through discreet intakes in the rear C-pillars and channelled through internal ducts to exit as a high-velocity air jet across the deck lid.</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel feature-card">
+                        <div>
+                            <div class="card-num">Feature 03</div>
+                            <h3>Double Diffuser</h3>
+                            <p>Accelerates underbody airflow cleanly away from the rear of the car, stabilising high-speed composure through sweeping British and European B-roads.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Performance -->
+        <section class="section section-performance" id="performance">
+            <div class="section-inner">
+                <div class="british-badge">British Powertrain Engineering</div>
+                <h2>Unbridled Twin-Turbo V12</h2>
+                <p class="section-desc">A 5.2-litre all-alloy quad overhead camshaft 48-valve twin-turbo engine delivering monumental torque from merely 1,800 RPM.</p>
+
+                <div class="specs-matrix">
+                    <div class="glass-panel spec-box">
+                        <span class="spec-box-val">5.2 Litres</span>
+                        <span class="spec-box-title">Engine Architecture</span>
+                        <span class="spec-box-desc">Front mid-mounted all-alloy quad-cam 48V twin-turbocharged V12 with water-to-air charge coolers.</span>
+                    </div>
+
+                    <div class="glass-panel spec-box">
+                        <span class="spec-box-val">715 BHP</span>
+                        <span class="spec-box-title">Power Output</span>
+                        <span class="spec-box-desc">Peak power reached at 6,500 RPM, delivering immediate throttle response and a glorious bespoke exhaust note.</span>
+                    </div>
+
+                    <div class="glass-panel spec-box">
+                        <span class="spec-box-val">ZF 8-Speed</span>
+                        <span class="spec-box-title">Transmission</span>
+                        <span class="spec-box-desc">Rear mid-mounted 8-speed automatic with carbon fibre propeller shaft and mechanical limited-slip differential.</span>
+                    </div>
+
+                    <div class="glass-panel spec-box">
+                        <span class="spec-box-val">410 mm</span>
+                        <span class="spec-box-title">Carbon Ceramic Brakes</span>
+                        <span class="spec-box-desc">6-piston front callipers with ventilated carbon ceramic discs ensuring fade-free deceleration.</span>
+                    </div>
+
+                    <div class="glass-panel spec-box">
+                        <span class="spec-box-val">3 Drive Modes</span>
+                        <span class="spec-box-title">Dynamic Chassis</span>
+                        <span class="spec-box-desc">GT, Sport, and Sport+ calibrations modulating throttle mapping, steering weighting, and adaptive damping.</span>
+                    </div>
+
+                    <div class="glass-panel spec-box">
+                        <span class="spec-box-val">Quad Exhaust</span>
+                        <span class="spec-box-title">Stainless Steel System</span>
+                        <span class="spec-box-desc">Electronically controlled active bypass valves produce an authentic, spine-tingling British soundtrack.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Craftsmanship -->
+        <section class="section section-craftsmanship" id="craftsmanship">
+            <div class="section-inner">
+                <div class="british-badge">Bespoke British Artistry</div>
+                <h2>Craftsmanship Without Compromise</h2>
+                <p class="section-desc">Every DBS Superleggera cabin is tailored by hand at Gaydon, Warwickshire. Master artisans spend over 200 hours shaping, stitching, and finishing each commission.</p>
+
+                <div class="craft-showcase">
+                    <div class="glass-panel craft-card">
+                        <h3>Sumptuous Scottish Hides</h3>
+                        <p>Supplied by Bridge of Weir and selected from the finest heritage stocks. Quilted and perforated leather flows effortlessly across sports seats sculpted for supreme grand touring comfort.</p>
+                        <div class="pill-tags">
+                            <span class="pill-tag">Caithness Leather</span>
+                            <span class="pill-tag">Hand-Stitched Welt</span>
+                            <span class="pill-tag">Alcantara® Headlining</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel craft-card">
+                        <h3>Forged Carbon & Polished Aluminium</h3>
+                        <p>Structural carbon fibre trim panels and tactile cold-metal controls offer an irresistible fusion of cutting-edge weight-saving technology and timeless luxury.</p>
+                        <div class="pill-tags">
+                            <span class="pill-tag">Satin Chopped Carbon</span>
+                            <span class="pill-tag">Anodised Paddle Shifters</span>
+                            <span class="pill-tag">Bang & Olufsen Audio</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Technical Specifications -->
+        <section class="section section-specifications" id="specifications">
+            <div class="section-inner">
+                <div class="british-badge">Technical Dossier</div>
+                <h2>Specifications & Commission</h2>
+                <p class="section-desc">Engineered to excel across continents, continents apart in every measurable dimension.</p>
+
+                <div class="glass-panel specs-table-panel">
+                    <table class="specs-table">
+                        <tbody>
+                            <tr>
+                                <td class="spec-param">Engine Configuration</td>
+                                <td class="spec-detail">5.2L Twin-Turbocharged 60° V12</td>
+                            </tr>
+                            <tr>
+                                <td class="spec-param">Power & Torque</td>
+                                <td class="spec-detail">715 BHP (725 PS) @ 6,500 RPM / 900 Nm @ 1,800–5,000 RPM</td>
+                            </tr>
+                            <tr>
+                                <td class="spec-param">Transmission & Drive</td>
+                                <td class="spec-detail">Rear-Mounted ZF 8-Speed Automatic, Rear-Wheel Drive with LSD</td>
+                            </tr>
+                            <tr>
+                                <td class="spec-param">Acceleration (0–62 MPH / 0–100 km/h)</td>
+                                <td class="spec-detail">3.4 seconds</td>
+                            </tr>
+                            <tr>
+                                <td class="spec-param">Maximum Speed</td>
+                                <td class="spec-detail">211 MPH (340 km/h)</td>
+                            </tr>
+                            <tr>
+                                <td class="spec-param">Kerb Weight / Weight Distribution</td>
+                                <td class="spec-detail">1,693 kg (Dry) / 51:49 Front-to-Rear</td>
+                            </tr>
+                            <tr>
+                                <td class="spec-param">Tyres & Wheels</td>
+                                <td class="spec-detail">Bespoke Pirelli P Zero (265/35 ZR21 Front, 305/30 ZR21 Rear)</td>
+                            </tr>
+                            <tr>
+                                <td class="spec-param">Manufacturing Location</td>
+                                <td class="spec-detail">Aston Martin Lagonda HQ, Gaydon, Warwickshire, UK</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="glass-panel commission-card">
+                    <h3>Commission Your DBS Superleggera</h3>
+                    <p>Connect with an Aston Martin Client Advisor to tailor your bespoke colourway, interior trim, and performance package.</p>
+                    <button class="btn-primary btn-open-modal">
+                        <span>Book an Appointment</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Luxury British Footer -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="footer-brand-title">Aston Martin Lagonda</div>
+                    <p class="footer-brand-desc">Handcrafted British luxury grand tourers engineered with unyielding devotion to beauty, craft, and performance.</p>
+                </div>
+
+                <div class="footer-links-group">
+                    <div class="footer-col">
+                        <h4>Models</h4>
+                        <ul>
+                            <li><a href="#home">Home (DBS Superleggera)</a></li>
+                            <li><a href="#performance">Vantage V8</a></li>
+                            <li><a href="#aerodynamics">DB12 Super Tourer</a></li>
+                            <li><a href="#craftsmanship">Valhalla Hybrid</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4>Experience</h4>
+                        <ul>
+                            <li><a href="#craftsmanship">Q by Aston Martin</a></li>
+                            <li><a href="#specifications">Gaydon Factory Tour</a></li>
+                            <li><a href="#performance">Motorsport & F1</a></li>
+                            <li><a href="#specifications">Owners Club</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4>Enquiries</h4>
+                        <ul>
+                            <li><a href="#" class="btn-open-modal">Book Test Drive</a></li>
+                            <li><a href="#" class="btn-open-modal">Authorised Dealerships</a></li>
+                            <li><a href="#" class="btn-open-modal">Corporate Fleet</a></li>
+                            <li><a href="#" class="btn-open-modal">Investor Relations</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Aston Martin Lagonda Limited. All rights reserved. Banbury Road, Gaydon, Warwickshire, CV35 0DB, United Kingdom.</p>
+                <p>Fuel Consumption: Combined 20.2 MPG (14.0 L/100km). CO₂ Emissions: 285 g/km (WLTP).</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Full-Screen Studio & Settings Modal -->
+    <div class="studio-modal-overlay" id="studio-modal" aria-hidden="true">
+        <!-- Top Bar inside Modal -->
+        <div class="studio-topbar">
+            <div class="studio-brand">
+                <div class="studio-pill">Interactive 3D Studio</div>
+                <div class="studio-title">DBS Superleggera Customisation</div>
+            </div>
+
+            <div class="studio-actions">
+                <button class="studio-btn-reset" id="btn-studio-reset" title="Reset all settings">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="1 4 1 10 7 10"></polyline>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                    </svg>
+                    <span>Reset Spec</span>
+                </button>
+                <button class="studio-btn-close" id="btn-studio-close" aria-label="Close studio">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- 360° Drag & Interaction Prompt in Center -->
+        <div class="studio-center-hint" id="studio-hint">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Drag to rotate 360° &bull; Scroll to zoom</span>
+        </div>
+
+        <!-- Floating Expand Button when Sidebar is Collapsed -->
+        <button class="studio-expand-btn" id="btn-expand-sidebar" title="Open Studio Settings panel" aria-label="Open Studio Settings panel">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            <span>Studio Settings</span>
+        </button>
+
+        <!-- Minimalist Settings Side Panel (Right) -->
+        <aside class="studio-sidebar glass-panel" id="studio-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-header-left">
+                    <span class="sidebar-header-badge">3D Configurator</span>
+                    <span class="sidebar-header-title">Studio &amp; Settings</span>
+                </div>
+                <button class="btn-collapse-sidebar" id="btn-collapse-sidebar" title="Collapse panel" aria-label="Collapse panel">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="sidebar-scrollable">
+                
+                <!-- Category 1: Perspective Distance / Car Size (Plan Apropiat / Îndepărtat) -->
+                <div class="setting-group">
+                    <div class="setting-title-row">
+                        <label class="setting-label">Perspective / Plan</label>
+                        <span class="setting-active-name" id="active-zoom-name">Standard</span>
+                    </div>
+                    <div class="zoom-slider-container">
+                        <div class="zoom-labels-row">
+                            <span>Apropiat</span>
+                            <span>Îndepărtat</span>
+                        </div>
+                        <input type="range" id="studio-zoom-range" min="2.2" max="5.6" step="0.05" value="3.65" class="studio-range-slider" aria-label="Perspective distance zoom">
+                    </div>
+                    <div class="pill-toggle-group zoom-presets">
+                        <button class="pill-btn" data-zoom="2.4">Apropiat</button>
+                        <button class="pill-btn active" data-zoom="3.65">Standard</button>
+                        <button class="pill-btn" data-zoom="5.4">Îndepărtat</button>
+                    </div>
+                </div>
+
+                <!-- Category 2: Exterior Paint Colour -->
+                <div class="setting-group">
+                    <div class="setting-title-row">
+                        <label class="setting-label">Exterior Paintwork</label>
+                        <span class="setting-active-name" id="active-colour-name">Hyper Red</span>
+                    </div>
+                    <div class="colour-swatches">
+                        <button class="colour-swatch active" data-color="#9a0a0a" data-name="Hyper Red" style="background: #9a0a0a;" title="Hyper Red"></button>
+                        <button class="colour-swatch" data-color="#00432c" data-name="Aston Racing Green" style="background: #00432c;" title="Aston Racing Green"></button>
+                        <button class="colour-swatch" data-color="#141416" data-name="Obsidian Black" style="background: #141416;" title="Obsidian Black"></button>
+                        <button class="colour-swatch" data-color="#9aa2a8" data-name="Quantum Silver" style="background: #9aa2a8;" title="Quantum Silver"></button>
+                        <button class="colour-swatch" data-color="#0a2a4a" data-name="Midnight Sapphire" style="background: #0a2a4a;" title="Midnight Sapphire"></button>
+                        <button class="colour-swatch" data-color="#c59b27" data-name="Solar Gold" style="background: #c59b27;" title="Solar Gold"></button>
+                        <button class="colour-swatch" data-color="#e8e8ed" data-name="Morning Frost White" style="background: #e8e8ed;" title="Morning Frost White"></button>
+                    </div>
+                </div>
+
+                <!-- Category 3: Paint Finish -->
+                <div class="setting-group">
+                    <label class="setting-label">Paint Finish</label>
+                    <div class="pill-toggle-group">
+                        <button class="pill-btn active" data-finish="gloss">High Gloss</button>
+                        <button class="pill-btn" data-finish="matte">Satin Matte</button>
+                    </div>
+                </div>
+
+                <!-- Category 4: Turntable Auto-Rotate -->
+                <div class="setting-group setting-row">
+                    <div>
+                        <label class="setting-label">Turntable Rotation</label>
+                        <div class="setting-desc">Continuous 360&deg; display spin</div>
+                    </div>
+                    <label class="switch-toggle">
+                        <input type="checkbox" id="toggle-autorotate" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <!-- Category 5: Studio Lighting Preset -->
+                <div class="setting-group">
+                    <label class="setting-label">Atmosphere &amp; Lighting</label>
+                    <div class="pill-toggle-group">
+                        <button class="pill-btn active" data-light="showroom">Showroom</button>
+                        <button class="pill-btn" data-light="golden">Golden Hour</button>
+                        <button class="pill-btn" data-light="cyber">Night Neon</button>
+                    </div>
+                </div>
+
+                <!-- Category 6: Quick Camera Angles -->
+                <div class="setting-group">
+                    <label class="setting-label">Camera Perspective</label>
+                    <div class="camera-angles-grid">
+                        <button class="angle-btn active" data-angle="front">Front 3/4</button>
+                        <button class="angle-btn" data-angle="side">Side Profile</button>
+                        <button class="angle-btn" data-angle="rear">Rear Deck</button>
+                        <button class="angle-btn" data-angle="top">Bird's Eye</button>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+    </div>
+
+    <!-- Transparent Frosted Enquiry Modal -->
+    <div class="modal-overlay" id="enquiry-modal" aria-hidden="true">
+        <div class="modal-card">
+            <button class="modal-close-btn" id="modal-close" aria-label="Close modal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="modal-header">
+                <h3>Commission Enquiry</h3>
+                <p>Arrange a private viewing or test drive with an Aston Martin Specialist.</p>
+            </div>
+
+            <form id="enquiry-form" onsubmit="event.preventDefault(); alert('Thank you for your enquiry. An Aston Martin Client Concierge will contact you shortly.'); document.getElementById('enquiry-modal').classList.remove('active');">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" class="form-input" placeholder="e.g. Lord James Montgomery" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="emailAddr">Email Address</label>
+                    <input type="email" id="emailAddr" class="form-input" placeholder="james@example.co.uk" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="preferredCentre">Preferred Dealership Location</label>
+                    <select id="preferredCentre" class="form-select">
+                        <option value="mayfair">Aston Martin Mayfair (London, UK)</option>
+                        <option value="gaydon">Aston Martin Heritage HQ (Gaydon, UK)</option>
+                        <option value="edinburgh">Aston Martin Edinburgh (Scotland)</option>
+                        <option value="manchester">Aston Martin Manchester (Wilmslow, UK)</option>
+                        <option value="international">International Concierge</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="interest">Area of Interest</label>
+                    <select id="interest" class="form-select">
+                        <option value="testdrive">Book VIP Track & Road Test Drive</option>
+                        <option value="bespoke">Q by Aston Martin Bespoke Commission</option>
+                        <option value="brochure">Request Confidential Specification Dossier</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 12px; padding: 14px;">
+                    Submit Commission Request
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Minimalist Go To Top Button -->
+    <button id="btn-go-top" class="btn-go-top" aria-label="Go to top" title="Go to top">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+
+    <!-- Main JavaScript Logic -->
+    <script type="module" src="main.js"></script>
+</body>
+</html>
