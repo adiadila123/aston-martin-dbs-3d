@@ -28,7 +28,7 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x08080a);
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 0.95, 4.15);
+camera.position.set(0, 0.85, 4.15);
 
 const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -173,10 +173,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 const cameraCoords = {
     x: 0,
-    y: 0.95,
+    y: 0.85,
     z: 4.15,
     lookX: 0,
-    lookY: 0.35,
+    lookY: 0.18,
     lookZ: 0,
     carRotY: 0
 };
@@ -270,8 +270,8 @@ function hideHeroContent() {
 
     gsap.to(heroElements, {
         opacity: 0,
-        y: -40,
-        duration: 0.5,
+        y: 30,
+        duration: 0.45,
         ease: "power2.in",
         overwrite: "auto"
     });
