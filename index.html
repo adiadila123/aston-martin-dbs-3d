@@ -40,6 +40,8 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+    <!-- Real, standards-compliant QR encoding for the phone-sync & AR modals -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
 <body>
 
@@ -84,7 +86,6 @@
 
             <!-- Actions -->
             <div class="nav-actions">
-                <button class="btn-secondary btn-open-modal" id="btn-open-enquiry">Enquire</button>
                 <button class="btn-primary btn-open-studio" id="btn-open-studio">
                     <span class="btn-studio-text">Studio &amp; Settings</span>
                     <span class="btn-studio-compact-text">Studio</span>
@@ -143,9 +144,6 @@
                             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                         </svg>
                     </button>
-                    <button class="btn-secondary mobile-enquiry-action btn-open-modal">
-                        <span>Request Consultation</span>
-                    </button>
                 </div>
 
                 <div class="mobile-drawer-footer">
@@ -157,6 +155,89 @@
 
     <!-- 3D WebGL Canvas in Background -->
     <div id="webgl-container"></div>
+
+    <!-- Interactive 3D Hotspots Layer (Pointers anchored directly to 3D vehicle coordinates) -->
+    <div id="hotspots-layer" class="hotspots-layer" aria-hidden="false">
+        <div class="hotspot-pin" id="pin-v12" data-hotspot="v12" title="5.2L Twin-Turbo V12">
+            <div class="pin-pulsing-ring"></div>
+            <div class="pin-core"></div>
+            <div class="pin-tooltip">5.2L Twin-Turbo V12</div>
+        </div>
+        <div class="hotspot-pin" id="pin-brakes" data-hotspot="brakes" title="Carbon Ceramic Brakes">
+            <div class="pin-pulsing-ring"></div>
+            <div class="pin-core"></div>
+            <div class="pin-tooltip">Carbon Ceramic Brakes</div>
+        </div>
+        <div class="hotspot-pin" id="pin-aero" data-hotspot="aero" title="Aeroblade II™">
+            <div class="pin-pulsing-ring"></div>
+            <div class="pin-core"></div>
+            <div class="pin-tooltip">Aeroblade II™</div>
+        </div>
+        <div class="hotspot-pin" id="pin-exhaust" data-hotspot="exhaust" title="Quad Titanium Exhaust">
+            <div class="pin-pulsing-ring"></div>
+            <div class="pin-core"></div>
+            <div class="pin-tooltip">Quad Exhaust &amp; Diffuser</div>
+        </div>
+    </div>
+
+    <!-- Floating Hotspot Detail Drawer / Modal -->
+    <div class="hotspot-card-drawer" id="hotspot-detail-card" aria-hidden="true">
+        <button class="btn-hotspot-close" id="btn-hotspot-close" aria-label="Close detail modal">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <div class="hotspot-card-tag" id="hotspot-tag">POWERTRAIN ARCHITECTURE</div>
+        <h3 class="hotspot-card-title" id="hotspot-title">5.2-Litre Twin-Turbo V12</h3>
+        <p class="hotspot-card-desc" id="hotspot-desc">All-alloy quad overhead camshaft 48-valve 5.2-litre bi-turbo V12 mounted front-midship for sublime 51:49 weight distribution.</p>
+        <div class="hotspot-specs-row" id="hotspot-specs">
+            <div class="hotspot-spec-pill">
+                <span class="hotspot-spec-val" id="spec-val-1">715 BHP</span>
+                <span class="hotspot-spec-lbl" id="spec-lbl-1">Max Power</span>
+            </div>
+            <div class="hotspot-spec-pill">
+                <span class="hotspot-spec-val" id="spec-val-2">900 Nm</span>
+                <span class="hotspot-spec-lbl" id="spec-lbl-2">Peak Torque</span>
+            </div>
+            <div class="hotspot-spec-pill">
+                <span class="hotspot-spec-val" id="spec-val-3">3.4s</span>
+                <span class="hotspot-spec-lbl" id="spec-lbl-3">0-62 MPH</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Cockpit Tachometer HUD (Appears when Engine is On or Revved) -->
+    <div class="tachometer-hud" id="tachometer-hud" aria-hidden="true">
+        <div class="tacho-inner glass-panel">
+            <div class="tacho-dial-wrap">
+                <svg class="tacho-svg" viewBox="0 0 160 160">
+                    <circle class="tacho-bg-track" cx="80" cy="80" r="62" />
+                    <circle class="tacho-fill-track" id="tacho-fill" cx="80" cy="80" r="62" stroke-dasharray="390" stroke-dashoffset="390" />
+                </svg>
+                <div class="tacho-center">
+                    <span class="tacho-rpm-val" id="tacho-rpm-val">850</span>
+                    <span class="tacho-rpm-unit">RPM</span>
+                    <span class="tacho-status" id="tacho-status">V12 IDLE</span>
+                </div>
+            </div>
+            <div class="tacho-actions">
+                <button class="btn-rev-throttle" id="btn-rev-throttle" title="Hold to rev 5.2L V12">
+                    <span class="rev-flame-icon">🔥</span>
+                    <span>HOLD TO REV V12</span>
+                </button>
+                <div class="tacho-sub-actions">
+                    <button class="btn-engine-cut" id="btn-engine-cut" title="Stop / Resume Driving">
+                        STOP
+                    </button>
+                    <button class="btn-tacho-mute" id="btn-tacho-mute" title="Mute / Unmute Sound (Press M)">
+                        <span id="tacho-mute-icon">🔊</span>
+                        <span class="tacho-mute-lbl">MUTE</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Cinematic Landing Page Sections (All Glassmorphic / Transparent) -->
     <main class="content">
@@ -180,12 +261,30 @@
                     <span>Handcrafted in Gaydon, England</span>
                 </div>
                 
-                <h1 class="hero-title">Aston Martin DBS Superleggera</h1>
-                <p class="section-desc hero-desc">The ultimate production Aston Martin. Savage power cloaked in exquisite British elegance. Sculpted to command the road and stir the soul.</p>
+                <h1 class="hero-title">
+                    <span class="hero-brand">Aston Martin</span>
+                    <span class="hero-model">DBS Superleggera</span>
+                </h1>
+                <p class="hero-desc">The Definitive 715 BHP V12 Super GT &bull; Handcrafted British Grand Tourer</p>
                 
-                <div class="cta-group hero-cta">
-                    <a href="#aerodynamics" class="btn-primary">Explore Dynamics</a>
-                    <button class="btn-secondary btn-open-modal">Request Consultation</button>
+                <div class="hero-cta-clean">
+                    <button class="btn-primary btn-open-studio hero-btn-main">
+                        <span>Enter 3D Studio</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                    <div class="hero-secondary-pills">
+                        <button class="hero-pill-btn btn-engine-toggle" id="btn-hero-engine" title="Ignite 5.2L Twin-Turbo V12 Engine">
+                            <span class="engine-pulsing-dot"></span>
+                            <span class="engine-btn-label">Start V12</span>
+                        </button>
+                        <button class="hero-pill-btn btn-launch-control-trigger" id="btn-hero-launch" title="Launch Control 0–100 km/h Simulator">
+                            <span class="launch-btn-icon">⚡</span>
+                            <span>0–100 Launch</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -215,6 +314,25 @@
                     </div>
                     <span>Scroll to explore</span>
                 </div>
+            </div>
+
+            <!-- Floating Minimalist 3D Controls in Hero -->
+            <div class="hero-3d-controls" id="hero-3d-controls">
+                <button class="hero-control-btn" id="btn-hero-zoom-in" title="Zoom in to DBS Superleggera" aria-label="Zoom in">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+                <button class="hero-control-btn" id="btn-hero-zoom-out" title="Zoom out" aria-label="Zoom out">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+                <button class="hero-control-btn" id="btn-hero-view-reset" title="Reset view &amp; rotation" aria-label="Reset 3D view">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                </button>
+            </div>
+
+            <!-- Hero Interactive Hint -->
+            <div class="hero-interaction-hint" id="hero-interaction-hint">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                <span>Drag to rotate 360° &bull; Scroll / Pinch to zoom</span>
             </div>
         </section>
 
@@ -376,18 +494,6 @@
                         </tbody>
                     </table>
                 </div>
-
-                <div class="glass-panel commission-card">
-                    <h3>Commission Your DBS Superleggera</h3>
-                    <p>Connect with an Aston Martin Client Advisor to tailor your bespoke colourway, interior trim, and performance package.</p>
-                    <button class="btn-primary btn-open-modal">
-                        <span>Book an Appointment</span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </button>
-                </div>
             </div>
         </section>
 
@@ -451,22 +557,101 @@
                 <div class="studio-title">DBS Superleggera Customisation</div>
             </div>
 
-            <div class="studio-actions">
-                <button class="studio-btn-reset" id="btn-studio-reset" title="Reset all settings">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="1 4 1 10 7 10"></polyline>
-                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
-                    </svg>
-                    <span>Reset Spec</span>
-                </button>
-                <button class="studio-btn-close" id="btn-studio-close" aria-label="Close studio">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <div class="studio-actions-group">
+                <!-- Minimalist Experience Dropdown -->
+                <div class="studio-dropdown" id="studio-dropdown">
+                    <button class="studio-dropdown-trigger" id="btn-studio-dropdown" aria-haspopup="true" aria-expanded="false" title="Studio Features &amp; Experience Suite">
+                        <span class="dropdown-icon-dot"></span>
+                        <span class="dropdown-label">Experience Suite</span>
+                        <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    
+                    <div class="studio-dropdown-menu glass-panel" id="studio-dropdown-menu" role="menu">
+                        <div class="dropdown-section-title">Performance &amp; Simulators</div>
+
+                        <button class="dropdown-item" id="btn-studio-highway" role="menuitem">
+                            <span class="dropdown-item-icon">🛣️</span>
+                            <div class="dropdown-item-text">
+                                <span class="item-title">Midnight Cruise &bull; 300 km/h Aero Run</span>
+                                <span class="item-sub">Gaydon Bypass High-Speed Aero Run &amp; V-Max Boost</span>
+                            </div>
+                        </button>
+
+                        <button class="dropdown-item" id="btn-studio-launch" role="menuitem">
+                            <span class="dropdown-item-icon">⚡</span>
+                            <div class="dropdown-item-text">
+                                <span class="item-title">Launch Control</span>
+                                <span class="item-sub">0–100 km/h F1 Drag Simulator</span>
+                            </div>
+                        </button>
+                        
+                        <button class="dropdown-item" id="btn-showcase-tour" role="menuitem">
+                            <span class="dropdown-item-icon">🎬</span>
+                            <div class="dropdown-item-text">
+                                <span class="item-title">360° Drone Showcase</span>
+                                <span class="item-sub">Cinematic Camera Flight</span>
+                            </div>
+                        </button>
+
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-section-title">Analytics &amp; Export</div>
+
+                        <button class="dropdown-item" id="btn-studio-benchmark" role="menuitem">
+                            <span class="dropdown-item-icon">📊</span>
+                            <div class="dropdown-item-text">
+                                <span class="item-title">Technical Benchmark</span>
+                                <span class="item-sub">DBS vs 770 Ultimate vs Vantage</span>
+                            </div>
+                        </button>
+
+                        <button class="dropdown-item" id="btn-studio-share" role="menuitem">
+                            <span class="dropdown-item-icon">📱</span>
+                            <div class="dropdown-item-text">
+                                <span class="item-title">Sync to Phone (QR)</span>
+                                <span class="item-sub">Generate Mobile Live Spec</span>
+                            </div>
+                        </button>
+
+                        <button class="dropdown-item" id="btn-studio-ar" role="menuitem">
+                            <span class="dropdown-item-icon">👓</span>
+                            <div class="dropdown-item-text">
+                                <span class="item-title">Augmented Reality</span>
+                                <span class="item-sub">View 1:1 Scale in Space</span>
+                            </div>
+                        </button>
+
+                        <button class="dropdown-item" id="btn-studio-snapshot" role="menuitem">
+                            <span class="dropdown-item-icon">📸</span>
+                            <div class="dropdown-item-text">
+                                <span class="item-title">Export 4K Spec Sheet</span>
+                                <span class="item-sub">Download High-Res Dossier</span>
+                            </div>
+                        </button>
+
+                        <div class="dropdown-divider"></div>
+
+                        <button class="dropdown-item item-secondary" id="btn-studio-reset" role="menuitem">
+                            <span class="dropdown-item-icon">🔄</span>
+                            <div class="dropdown-item-text">
+                                <span class="item-title">Reset Configuration</span>
+                                <span class="item-sub">Revert to factory specification</span>
+                            </div>
+                        </button>
+                    </div><!-- /studio-dropdown-menu -->
+                </div><!-- /studio-dropdown -->
+
+                <!-- Minimalist Close Studio Button -->
+                <button class="studio-btn-close" id="btn-studio-close" aria-label="Close studio" title="Exit Studio">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 </button>
-            </div>
-        </div>
+            </div><!-- /studio-actions-group -->
+        </div><!-- /studio-topbar -->
+
 
         <!-- 360° Drag & Interaction Prompt in Center -->
         <div class="studio-center-hint" id="studio-hint">
@@ -486,96 +671,242 @@
 
         <!-- Minimalist Settings Side Panel (Right) -->
         <aside class="studio-sidebar glass-panel" id="studio-sidebar">
-            <div class="sidebar-header">
+            <div class="sheet-drag-handle" id="sheet-drag-handle" aria-hidden="true"></div>
+            <div class="sidebar-header" id="sidebar-drag-handle" title="Drag to move panel anywhere on screen">
                 <div class="sidebar-header-left">
-                    <span class="sidebar-header-badge">3D Configurator</span>
-                    <span class="sidebar-header-title">Studio &amp; Settings</span>
+                    <span class="drag-indicator" title="Drag to reposition panel">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="9" cy="5" r="1.5"></circle>
+                            <circle cx="15" cy="5" r="1.5"></circle>
+                            <circle cx="9" cy="12" r="1.5"></circle>
+                            <circle cx="15" cy="12" r="1.5"></circle>
+                            <circle cx="9" cy="19" r="1.5"></circle>
+                            <circle cx="15" cy="19" r="1.5"></circle>
+                        </svg>
+                    </span>
+                    <span class="sidebar-header-badge">Q by Aston Martin</span>
+                    <span class="sidebar-header-title">Studio &amp; Bespoke Spec</span>
                 </div>
-                <button class="btn-collapse-sidebar" id="btn-collapse-sidebar" title="Collapse panel" aria-label="Collapse panel">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                </button>
+                <div class="sidebar-header-actions">
+                    <button class="btn-reset-dock" id="btn-reset-dock" title="Reset panel position" aria-label="Reset panel position">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                            <path d="M3 3v5h5"></path>
+                        </svg>
+                    </button>
+                    <button class="btn-collapse-sidebar" id="btn-collapse-sidebar" title="Collapse panel" aria-label="Collapse panel">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <div class="sidebar-scrollable">
-                
-                <!-- Category 1: Perspective Distance / Car Size (Plan Apropiat / Îndepărtat) -->
-                <div class="setting-group">
-                    <div class="setting-title-row">
-                        <label class="setting-label">Perspective / Plan</label>
-                        <span class="setting-active-name" id="active-zoom-name">Standard</span>
-                    </div>
-                    <div class="zoom-slider-container">
-                        <div class="zoom-labels-row">
-                            <span>Apropiat</span>
-                            <span>Îndepărtat</span>
+            <div class="sidebar-scrollable accordion-root">
+
+                <!-- 1: Vehicle Systems -->
+                <div class="accordion-item open">
+                    <button class="accordion-header" aria-expanded="true">
+                        <span class="acc-title">Vehicle Systems</span>
+                        <svg class="acc-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="systems-grid">
+                            <button class="system-toggle-btn" id="btn-toggle-headlights" title="Toggle LED Headlights &amp; Tail Lamps">
+                                <span class="system-icon">💡</span>
+                                <span class="system-text">LED Lights: <strong>OFF</strong></span>
+                            </button>
+                            <button class="system-toggle-btn" id="btn-toggle-engine" title="Start or Stop 5.2L Twin-Turbo V12 Engine">
+                                <span class="system-icon">🔊</span>
+                                <span class="system-text">V12 Sound: <strong>OFF</strong></span>
+                            </button>
+                            <button class="system-toggle-btn active" id="btn-toggle-hotspots" title="Show or Hide 3D Engineering Hotspots">
+                                <span class="system-icon">🎯</span>
+                                <span class="system-text">Hotspots: <strong>ON</strong></span>
+                            </button>
+                            <button class="system-toggle-btn" id="btn-toggle-xray" title="Inspect Internal Powertrain &amp; Chassis Architecture">
+                                <span class="system-icon">🔬</span>
+                                <span class="system-text">X-Ray: <strong>OFF</strong></span>
+                            </button>
                         </div>
-                        <input type="range" id="studio-zoom-range" min="2.2" max="5.6" step="0.05" value="3.65" class="studio-range-slider" aria-label="Perspective distance zoom">
-                    </div>
-                    <div class="pill-toggle-group zoom-presets">
-                        <button class="pill-btn" data-zoom="2.4">Apropiat</button>
-                        <button class="pill-btn active" data-zoom="3.65">Standard</button>
-                        <button class="pill-btn" data-zoom="5.4">Îndepărtat</button>
                     </div>
                 </div>
 
-                <!-- Category 2: Exterior Paint Colour -->
-                <div class="setting-group">
-                    <div class="setting-title-row">
-                        <label class="setting-label">Exterior Paintwork</label>
-                        <span class="setting-active-name" id="active-colour-name">Obsidian Black</span>
-                    </div>
-                    <div class="colour-swatches">
-                        <button class="colour-swatch" data-color="#9a0a0a" data-name="Hyper Red" style="background: #9a0a0a;" title="Hyper Red"></button>
-                        <button class="colour-swatch" data-color="#00432c" data-name="Aston Racing Green" style="background: #00432c;" title="Aston Racing Green"></button>
-                        <button class="colour-swatch active" data-color="#141416" data-name="Obsidian Black" style="background: #141416;" title="Obsidian Black"></button>
-                        <button class="colour-swatch" data-color="#9aa2a8" data-name="Quantum Silver" style="background: #9aa2a8;" title="Quantum Silver"></button>
-                        <button class="colour-swatch" data-color="#0a2a4a" data-name="Midnight Sapphire" style="background: #0a2a4a;" title="Midnight Sapphire"></button>
-                        <button class="colour-swatch" data-color="#c59b27" data-name="Solar Gold" style="background: #c59b27;" title="Solar Gold"></button>
-                        <button class="colour-swatch" data-color="#e8e8ed" data-name="Morning Frost White" style="background: #e8e8ed;" title="Morning Frost White"></button>
-                    </div>
-                </div>
-
-                <!-- Category 3: Paint Finish -->
-                <div class="setting-group">
-                    <label class="setting-label">Paint Finish</label>
-                    <div class="pill-toggle-group">
-                        <button class="pill-btn" data-finish="gloss">High Gloss</button>
-                        <button class="pill-btn active" data-finish="matte">Satin Matte</button>
-                    </div>
-                </div>
-
-                <!-- Category 4: Turntable Auto-Rotate -->
-                <div class="setting-group setting-row">
-                    <div>
-                        <label class="setting-label">Turntable Rotation</label>
-                        <div class="setting-desc">Continuous 360&deg; display spin</div>
-                    </div>
-                    <label class="switch-toggle">
-                        <input type="checkbox" id="toggle-autorotate" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-
-                <!-- Category 5: Studio Lighting Preset -->
-                <div class="setting-group">
-                    <label class="setting-label">Atmosphere &amp; Lighting</label>
-                    <div class="pill-toggle-group">
-                        <button class="pill-btn active" data-light="showroom">Showroom</button>
-                        <button class="pill-btn" data-light="golden">Golden Hour</button>
-                        <button class="pill-btn" data-light="cyber">Night Neon</button>
+                <!-- 2: Weather & Atmosphere -->
+                <div class="accordion-item open">
+                    <button class="accordion-header" aria-expanded="true">
+                        <span class="acc-title">Weather &amp; Atmosphere</span>
+                        <span class="acc-value" id="active-weather-name">Golden Sun</span>
+                        <svg class="acc-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="weather-selector-grid" id="weather-selector-grid">
+                            <button class="weather-card active" data-weather="sun" title="Golden Sun">
+                                <span class="weather-icon">☀️</span>
+                                <span class="weather-title">Soare</span>
+                                <span class="weather-sub">Golden Sun</span>
+                            </button>
+                            <button class="weather-card" data-weather="rain" title="Wet Track">
+                                <span class="weather-icon">🌧️</span>
+                                <span class="weather-title">Ploaie</span>
+                                <span class="weather-sub">Wet Track</span>
+                            </button>
+                            <button class="weather-card" data-weather="fog" title="London Fog">
+                                <span class="weather-icon">🌫️</span>
+                                <span class="weather-title">Ceață</span>
+                                <span class="weather-sub">London Fog</span>
+                            </button>
+                            <button class="weather-card" data-weather="snow" title="Alpine Snow">
+                                <span class="weather-icon">❄️</span>
+                                <span class="weather-title">Ninsoare</span>
+                                <span class="weather-sub">Alpine Snow</span>
+                            </button>
+                        </div>
+                        <div class="pill-toggle-group" style="margin-top:8px;">
+                            <button class="pill-btn active" data-light="showroom">Showroom</button>
+                            <button class="pill-btn" data-light="golden">Golden Hour</button>
+                            <button class="pill-btn" data-light="cyber">Night Neon</button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Category 6: Quick Camera Angles -->
-                <div class="setting-group">
-                    <label class="setting-label">Camera Perspective</label>
-                    <div class="camera-angles-grid">
-                        <button class="angle-btn active" data-angle="front">Front 3/4</button>
-                        <button class="angle-btn" data-angle="side">Side Profile</button>
-                        <button class="angle-btn" data-angle="rear">Rear Deck</button>
-                        <button class="angle-btn" data-angle="top">Bird's Eye</button>
+                <!-- 3: Drive Mode -->
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="acc-title">Drive Mode</span>
+                        <span class="acc-value" id="active-drive-mode-name">GT Mode</span>
+                        <svg class="acc-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="drive-mode-selector-strip" id="drive-mode-selector">
+                            <button class="drive-mode-tab active" data-mode="gt" title="GT: Supple Ride"><span class="mode-code">GT</span><span class="mode-desc">Grand Tourer</span></button>
+                            <button class="drive-mode-tab" data-mode="sport" title="Sport: Dynamic"><span class="mode-code">SPORT</span><span class="mode-desc">Dynamic</span></button>
+                            <button class="drive-mode-tab" data-mode="track" title="Track: Race Spec"><span class="mode-code">TRACK</span><span class="mode-desc">Race Spec</span></button>
+                        </div>
+                        <button class="pill-btn" id="btn-sidebar-highway-launch" style="width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; border-color: rgba(212, 175, 55, 0.4); color: #fff; background: rgba(212, 175, 55, 0.1);">
+                            <span>⚡</span>
+                            <span>Engage 300 km/h Midnight Aero Run</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4: Exterior Paint -->
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="acc-title">Exterior Paint</span>
+                        <span class="acc-value" id="active-colour-name">Obsidian Black</span>
+                        <svg class="acc-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="colour-swatches">
+                            <button class="colour-swatch" data-color="#9a0a0a" data-name="Hyper Red" style="background:#9a0a0a" title="Hyper Red"></button>
+                            <button class="colour-swatch" data-color="#00432c" data-name="Aston Racing Green" style="background:#00432c" title="Aston Racing Green"></button>
+                            <button class="colour-swatch active" data-color="#141416" data-name="Obsidian Black" style="background:#141416" title="Obsidian Black"></button>
+                            <button class="colour-swatch" data-color="#9aa2a8" data-name="Quantum Silver" style="background:#9aa2a8" title="Quantum Silver"></button>
+                            <button class="colour-swatch" data-color="#0a2a4a" data-name="Midnight Sapphire" style="background:#0a2a4a" title="Midnight Sapphire"></button>
+                            <button class="colour-swatch" data-color="#c59b27" data-name="Solar Gold" style="background:#c59b27" title="Solar Gold"></button>
+                            <button class="colour-swatch" data-color="#e8e8ed" data-name="Morning Frost White" style="background:#e8e8ed" title="Morning Frost White"></button>
+                        </div>
+                        <div class="pill-toggle-group" style="margin-top:8px;">
+                            <button class="pill-btn" data-finish="gloss">High Gloss</button>
+                            <button class="pill-btn active" data-finish="matte">Satin Matte</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5: Wheels & Calipers -->
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="acc-title">Wheels &amp; Calipers</span>
+                        <span class="acc-value" id="active-wheel-name">Gloss Black</span>
+                        <svg class="acc-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="wheel-swatches">
+                            <button class="wheel-swatch active" data-wheel-color="#101012" data-wheel-metal="0.9" data-wheel-rough="0.18" data-wheel-name="Gloss Black" style="background:#101012" title="Gloss Black"></button>
+                            <button class="wheel-swatch" data-wheel-color="#7d8084" data-wheel-metal="0.85" data-wheel-rough="0.32" data-wheel-name="Satin Platinum" style="background:#7d8084" title="Satin Platinum"></button>
+                            <button class="wheel-swatch" data-wheel-color="#d0d3d7" data-wheel-metal="0.95" data-wheel-rough="0.12" data-wheel-name="Liquid Silver" style="background:#d0d3d7" title="Liquid Silver"></button>
+                            <button class="wheel-swatch" data-wheel-color="#7a674d" data-wheel-metal="0.85" data-wheel-rough="0.3" data-wheel-name="Champagne Bronze" style="background:#7a674d" title="Champagne Bronze"></button>
+                        </div>
+                        <div class="caliper-swatches" style="margin-top:10px;">
+                            <button class="caliper-swatch active" data-caliper-color="#cbe432" data-caliper-name="Aston Lime" style="background:#cbe432" title="Aston Lime"></button>
+                            <button class="caliper-swatch" data-caliper-color="#cc1a24" data-caliper-name="Apex Red" style="background:#cc1a24" title="Apex Red"></button>
+                            <button class="caliper-swatch" data-caliper-color="#d4af37" data-caliper-name="Acid Bronze" style="background:#d4af37" title="Acid Bronze"></button>
+                            <button class="caliper-swatch" data-caliper-color="#f5b301" data-caliper-name="Bespoke Yellow" style="background:#f5b301" title="Bespoke Yellow"></button>
+                            <button class="caliper-swatch" data-caliper-color="#141416" data-caliper-name="Ceramic Black" style="background:#141416" title="Ceramic Black"></button>
+                        </div>
+                        <p style="font-size:0.6rem;color:var(--text-muted);margin-top:6px;letter-spacing:0.5px;">WHEELS &nbsp;·&nbsp; <span id="active-caliper-name" style="color:var(--gold)">Aston Lime</span> CALIPERS</p>
+                    </div>
+                </div>
+
+                <!-- 6: Interior & Liveries -->
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="acc-title">Interior &amp; Liveries</span>
+                        <span class="acc-value" id="active-interior-name">Oxford Tan</span>
+                        <svg class="acc-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="interior-swatches">
+                            <button class="interior-swatch active" data-interior-color="#935d37" data-interior-name="Oxford Tan" style="background:#935d37" title="Oxford Tan"></button>
+                            <button class="interior-swatch" data-interior-color="#8e1e1e" data-interior-name="Spicy Red" style="background:#8e1e1e" title="Spicy Red"></button>
+                            <button class="interior-swatch" data-interior-color="#141416" data-interior-name="Obsidian Black" style="background:#141416" title="Obsidian Black"></button>
+                            <button class="interior-swatch" data-interior-color="#1a283a" data-interior-name="Lords Blue" style="background:#1a283a" title="Lords Blue"></button>
+                        </div>
+                        <div class="livery-swatches" style="margin-top:10px;">
+                            <button class="livery-card active" data-livery="clean" title="Factory Clean"><div class="livery-preview preview-clean"></div><span>Clean</span></button>
+                            <button class="livery-card" data-livery="amr_lime" title="AMR Lime"><div class="livery-preview preview-amr"></div><span>AMR Lime</span></button>
+                            <button class="livery-card" data-livery="heritage_white" title="Heritage"><div class="livery-preview preview-heritage"></div><span>Heritage</span></button>
+                            <button class="livery-card" data-livery="gulf" title="Gulf Pack"><div class="livery-preview preview-gulf"></div><span>Gulf Pack</span></button>
+                            <button class="livery-card" data-livery="stealth" title="Blackout"><div class="livery-preview preview-stealth"></div><span>Blackout</span></button>
+                        </div>
+                        <p style="font-size:0.6rem;color:var(--text-muted);margin-top:6px;letter-spacing:0.5px;">LEATHER &nbsp;·&nbsp; <span id="active-livery-name" style="color:var(--gold)">Factory Clean</span> LIVERY</p>
+                    </div>
+                </div>
+
+                <!-- 7: Camera & Rotation -->
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="acc-title">Camera &amp; View</span>
+                        <span class="acc-value" id="active-zoom-name">Standard</span>
+                        <svg class="acc-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="camera-angles-grid">
+                            <button class="angle-btn active" data-angle="front">Front 3/4</button>
+                            <button class="angle-btn" data-angle="side">Side Profile</button>
+                            <button class="angle-btn" data-angle="rear">Rear Deck</button>
+                            <button class="angle-btn" data-angle="top">Bird's Eye</button>
+                            <button class="angle-btn" data-angle="cockpit">Cockpit</button>
+                        </div>
+                        <div class="zoom-slider-container" style="margin-top:10px;">
+                            <div class="zoom-labels-row"><span>Close</span><span>Far</span></div>
+                            <input type="range" id="studio-zoom-range" min="2.2" max="5.6" step="0.05" value="3.65" class="studio-range-slider" aria-label="Perspective distance zoom">
+                        </div>
+                        <div class="setting-row" style="margin-top:10px;">
+                            <div>
+                                <span class="setting-label" style="font-size:0.65rem;">Turntable</span>
+                                <div class="setting-desc">360° auto-spin</div>
+                            </div>
+                            <label class="switch-toggle">
+                                <input type="checkbox" id="toggle-autorotate" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8: Carbon & Aero -->
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="acc-title">Carbon &amp; Aero Pack</span>
+                        <svg class="acc-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="pill-toggle-group carbon-pack-group">
+                            <button class="pill-btn active" data-carbon="gloss">Gloss 2x2 Twill</button>
+                            <button class="pill-btn" data-carbon="matte">Satin Chopped</button>
+                        </div>
                     </div>
                 </div>
 
@@ -633,6 +964,429 @@
                     Submit Commission Request
                 </button>
             </form>
+        </div>
+    </div>
+
+    <!-- Full-Screen Interactive Launch Control 0-100 Simulator -->
+    <div class="launch-modal-overlay" id="launch-control-modal" aria-hidden="true">
+        <div class="launch-modal-inner">
+            <button class="launch-close-btn" id="btn-close-launch" aria-label="Exit Launch Control">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="launch-header">
+                <div class="british-badge">ASTON MARTIN DYNAMICS</div>
+                <h2 class="launch-title">0–100 km/h Launch Control</h2>
+                <p class="launch-subtitle">715 BHP &bull; 900 Nm &bull; ZF 8-Speed Transaxle</p>
+            </div>
+
+            <!-- Drag Strip Tree (Christmas Tree) -->
+            <div class="drag-tree-container">
+                <div class="tree-pillar">
+                    <div class="tree-light light-prestage" id="light-prestage"></div>
+                    <div class="tree-light light-stage" id="light-stage"></div>
+                    <div class="tree-light light-amber" id="light-amber-1"></div>
+                    <div class="tree-light light-amber" id="light-amber-2"></div>
+                    <div class="tree-light light-amber" id="light-amber-3"></div>
+                    <div class="tree-light light-green" id="light-green"></div>
+                </div>
+                <div class="tree-status-box">
+                    <span class="tree-status-phase" id="launch-phase-text">SYSTEM ARMED</span>
+                    <span class="tree-status-hint" id="launch-hint-text">Step 1: Hold Brake Pedal firmly</span>
+                </div>
+            </div>
+
+            <!-- Dynamic Telemetry Gauges -->
+            <div class="launch-telemetry-row">
+                <div class="launch-stat-box">
+                    <span class="launch-stat-label">SPEED</span>
+                    <span class="launch-stat-value" id="launch-speed-val">0</span>
+                    <span class="launch-stat-unit">KM/H</span>
+                </div>
+                <div class="launch-stat-box">
+                    <span class="launch-stat-label">TIME</span>
+                    <span class="launch-stat-value" id="launch-timer-val">0.00</span>
+                    <span class="launch-stat-unit">SECONDS</span>
+                </div>
+                <div class="launch-stat-box">
+                    <span class="launch-stat-label">TURBO BOOST</span>
+                    <span class="launch-stat-value" id="launch-boost-val">0.0</span>
+                    <span class="launch-stat-unit">BAR</span>
+                </div>
+                <div class="launch-stat-box">
+                    <span class="launch-stat-label">GEAR</span>
+                    <span class="launch-stat-value" id="launch-gear-val">1</span>
+                    <span class="launch-stat-unit">ZF 8-SPD</span>
+                </div>
+            </div>
+
+            <!-- Pedals Interaction Deck -->
+            <div class="launch-pedals-deck" id="launch-pedals-deck">
+                <button class="pedal-btn pedal-brake" id="btn-pedal-brake">
+                    <span class="pedal-top"></span>
+                    <span class="pedal-label">BRAKE</span>
+                    <span class="pedal-sub">HOLD FIRMLY</span>
+                </button>
+                <button class="pedal-btn pedal-throttle" id="btn-pedal-throttle">
+                    <span class="pedal-top"></span>
+                    <span class="pedal-label">THROTTLE</span>
+                    <span class="pedal-sub">FLOOR ACCELERATOR</span>
+                </button>
+            </div>
+
+            <!-- Results Slip Card (revealed on completion) -->
+            <div class="launch-results-card" id="launch-results-card">
+                <div class="results-badge">CERTIFIED TELEMETRY SLIP</div>
+                <h3>Sprint Record Achieved</h3>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <span>0–60 MPH</span>
+                        <strong id="res-0-60">3.20 s</strong>
+                    </div>
+                    <div class="result-item">
+                        <span>0–100 KM/H</span>
+                        <strong id="res-0-100">3.40 s</strong>
+                    </div>
+                    <div class="result-item">
+                        <span>REACTION TIME</span>
+                        <strong id="res-reaction">0.18 s</strong>
+                    </div>
+                    <div class="result-item">
+                        <span>PEAK G-FORCE</span>
+                        <strong>1.22 G</strong>
+                    </div>
+                </div>
+                <div class="results-actions">
+                    <button class="btn-primary" id="btn-launch-again">Launch Again</button>
+                    <button class="btn-secondary" id="btn-launch-exit">Exit to Showroom</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Spec & Live QR Code Modal -->
+    <div class="modal-overlay" id="qr-share-modal" aria-hidden="true">
+        <div class="modal-card qr-modal-card">
+            <button class="modal-close-btn" id="modal-qr-close" aria-label="Close QR modal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="modal-header">
+                <div class="british-badge">Q by Aston Martin</div>
+                <h3>Send Spec to Mobile</h3>
+                <p>Scan with your smartphone camera to load your exact bespoke DBS Superleggera build instantly.</p>
+            </div>
+
+            <div class="qr-canvas-wrap">
+                <canvas id="qr-canvas" width="200" height="200"></canvas>
+            </div>
+
+            <div class="qr-spec-pills" id="qr-spec-pills">
+                <span class="qr-pill" id="qr-pill-paint">Obsidian Black</span>
+                <span class="qr-pill" id="qr-pill-wheels">Gloss Black</span>
+                <span class="qr-pill" id="qr-pill-calipers">Aston Lime</span>
+                <span class="qr-pill" id="qr-pill-interior">Oxford Tan</span>
+            </div>
+
+            <div class="qr-copy-row">
+                <input type="text" id="qr-share-url" readonly class="form-input" style="font-size:0.75rem; text-overflow:ellipsis;">
+                <button class="btn-primary" id="btn-copy-url">
+                    <span>Copy Link</span>
+                </button>
+            </div>
+            <div class="copy-toast" id="copy-toast">Link copied to clipboard!</div>
+        </div>
+    </div>
+
+    <!-- Augmented Reality (AR) Launch Modal -->
+    <div class="modal-overlay" id="ar-modal" aria-hidden="true">
+        <div class="modal-card ar-modal-card">
+            <button class="modal-close-btn" id="modal-ar-close" aria-label="Close AR modal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="modal-header">
+                <div class="british-badge">Spatial Experience</div>
+                <h3>View in Your Driveway (AR)</h3>
+                <p>Experience the Aston Martin DBS Superleggera at true 1:1 physical scale in Augmented Reality.</p>
+            </div>
+
+            <div class="ar-instruction-card">
+                <div class="ar-qr-wrap">
+                    <canvas id="ar-qr-canvas" width="180" height="180"></canvas>
+                </div>
+                <div class="ar-steps">
+                    <div class="ar-step-item">
+                        <span class="ar-step-num">1</span>
+                        <span>Point camera at your phone screen to scan</span>
+                    </div>
+                    <div class="ar-step-item">
+                        <span class="ar-step-num">2</span>
+                        <span>Place full-scale vehicle on level ground outdoors</span>
+                    </div>
+                    <div class="ar-step-item">
+                        <span class="ar-step-num">3</span>
+                        <span>Walk 360&deg; around your handcrafted specification</span>
+                    </div>
+                </div>
+            </div>
+
+            <a id="btn-ar-launch" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 14px; text-decoration: none;" href="assets/scene-v5.glb" rel="ar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                <span>Launch AR on Mobile Device</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Bang & Olufsen In-Cabin BeoSound Hi-Fi Experience (Docked in Cockpit view) -->
+    <div class="bo-sound-bar" id="bo-sound-bar" aria-hidden="true">
+        <div class="bo-inner glass-panel">
+            <div class="bo-brand">
+                <span class="bo-logo">BANG &amp; OLUFSEN</span>
+                <span class="bo-tech">BeoSound 1,000W &bull; Acoustic Lens Technology</span>
+            </div>
+            <div class="bo-track-info">
+                <span class="bo-track-title">Symphony of Twelve (Gaydon Acoustic Mix)</span>
+                <div class="bo-eq-visualizer">
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                </div>
+            </div>
+            <div class="bo-controls">
+                <button class="bo-btn-toggle" id="btn-bo-toggle" title="Toggle Bang &amp; Olufsen Acoustic System">
+                    <span>Mute Cabin Hi-Fi</span>
+                </button>
+            </div>
+        </div>
+    </div><!-- /bo-sound-bar -->
+    <!-- Interactive Silverstone Track Test Drive Simulator HUD -->
+
+    <div class="drive-simulator-overlay" id="drive-simulator-hud" aria-hidden="true">
+        <div class="drive-top-bar">
+            <div class="drive-telemetry-badge">
+                <span class="pulse-rec-dot"></span>
+                <span>SILVERSTONE PROVING GROUND &bull; LIVE DYNAMICS</span>
+            </div>
+            <button class="btn-exit-drive" id="btn-exit-drive" title="Exit Simulator to Showroom">
+                <span>Exit Test Drive</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+
+        <!-- Speed & Gear Telemetry Cluster -->
+        <div class="drive-gauge-cluster glass-panel">
+            <div class="drive-speed-box">
+                <span class="drive-speed-val" id="drive-speed-val">0</span>
+                <span class="drive-speed-unit">KM/H</span>
+            </div>
+            <div class="drive-gear-box">
+                <span class="drive-gear-val" id="drive-gear-val">N</span>
+                <span class="drive-gear-unit">ZF 8-SPD</span>
+            </div>
+            <div class="drive-metric-box">
+                <span class="drive-metric-val" id="drive-gforce-val">1.00 G</span>
+                <span class="drive-gear-unit">G-FORCE</span>
+            </div>
+            <div class="drive-metric-box">
+                <span class="drive-metric-val" id="drive-lap-val">00:00.00</span>
+                <span class="drive-gear-unit">SESSION</span>
+            </div>
+            <div class="drive-mode-pill" id="drive-telemetry-mode">SPORT+</div>
+        </div>
+
+        <!-- Controls Deck (Desktop Key Hints + Mobile Touch Controls) -->
+        <div class="drive-controls-deck">
+            <div class="drive-desktop-hint">
+                <span>[W] Throttle &bull; [S] Brake/Reverse &bull; [A/D] Steer &bull; [SPACE] Handbrake Drift</span>
+            </div>
+            <div class="drive-touch-deck" id="drive-touch-deck">
+                <div class="touch-steer-group">
+                    <button class="touch-btn touch-steer-btn" id="touch-steer-left" aria-label="Steer Left">◀</button>
+                    <button class="touch-btn touch-steer-btn" id="touch-steer-right" aria-label="Steer Right">▶</button>
+                </div>
+                <div class="touch-pedals-group">
+                    <button class="touch-btn touch-brake" id="touch-pedal-brake">BRAKE</button>
+                    <button class="touch-btn touch-gas" id="touch-pedal-gas">THROTTLE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Midnight Highway Cruise HUD: Minimalist & Spectacular -->
+    <div class="highway-cruise-overlay" id="highway-cruise-hud" aria-hidden="true">
+        <!-- Speed Blur & Ambient Vignette -->
+        <div class="highway-speed-vignette" id="highway-vignette"></div>
+
+        <!-- Top Minimalist Flightdeck Header -->
+        <div class="highway-header">
+            <div class="highway-brand-badge">
+                <span class="hw-badge-dot"></span>
+                <span class="hw-badge-title">MIDNIGHT CRUISE</span>
+                <span class="hw-badge-sep">//</span>
+                <span class="hw-badge-sub" id="hw-badge-sub">300 KM/H AERO RUN</span>
+            </div>
+
+            <!-- Central Minimalist Aero Telemetry Bar -->
+            <div class="highway-aero-status">
+                <div class="hw-aero-pill">
+                    <span class="hw-aero-label">AEROBLADE II</span>
+                    <span class="hw-aero-val" id="hw-downforce-val">180 KG DOWNFORCE</span>
+                </div>
+                <div class="hw-aero-pill">
+                    <span class="hw-aero-label">DRAG COEFF</span>
+                    <span class="hw-aero-val">0.38 Cd</span>
+                </div>
+                <div class="hw-aero-pill hw-aero-boost-tag" id="hw-boost-tag">
+                    <span class="hw-aero-label">STABILITY</span>
+                    <span class="hw-aero-val" id="hw-stability-val">ACTIVE AERO</span>
+                </div>
+            </div>
+
+            <button class="btn-exit-highway" id="btn-exit-highway" title="Exit Midnight Cruise">
+                <span>DISENGAGE</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+
+        <!-- Center Velocity Display (Minimalist Digital Cockpit) -->
+        <div class="highway-center-cockpit">
+            <div class="hw-speed-cluster">
+                <div class="hw-speed-number-wrap">
+                    <span class="hw-speed-number" id="hw-speed-val">300</span>
+                    <span class="hw-speed-unit">KM/H</span>
+                </div>
+                <!-- Minimalist Tach Line -->
+                <div class="hw-tacho-bar-track">
+                    <div class="hw-tacho-bar-fill" id="hw-tacho-fill"></div>
+                </div>
+                <div class="hw-speed-specs-row">
+                    <span><strong id="hw-gear-val">7TH</strong> GEAR</span>
+                    <span class="hw-dot">&bull;</span>
+                    <span><strong id="hw-rpm-val">5,400</strong> RPM</span>
+                    <span class="hw-dot">&bull;</span>
+                    <span><strong id="hw-boost-val">1.45</strong> BAR BOOST</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Controls & Camera Deck -->
+        <div class="highway-bottom-deck">
+            <!-- Camera View Selectors -->
+            <div class="highway-cam-selector">
+                <button class="hw-cam-btn active" data-cam="chase" id="hw-cam-chase">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <span>Chase Cam</span>
+                </button>
+                <button class="hw-cam-btn" data-cam="hood" id="hw-cam-hood">
+                    <span>Cockpit Hood</span>
+                </button>
+                <button class="hw-cam-btn" data-cam="drone" id="hw-cam-drone">
+                    <span>Cinematic Flyby</span>
+                </button>
+            </div>
+
+            <!-- Action Buttons: V-MAX Kickdown, Aero Toggle & Sound Mute -->
+            <div class="highway-actions-row">
+                <button class="hw-action-btn hw-btn-aero active" id="hw-toggle-aero">
+                    <span class="hw-action-icon">💨</span>
+                    <span id="hw-aero-text">Aero Flow: ON</span>
+                </button>
+                <button class="hw-action-btn hw-btn-boost" id="hw-btn-boost">
+                    <span class="hw-action-icon">⚡</span>
+                    <span id="hw-boost-btn-text">V-MAX BOOST 340 KM/H</span>
+                </button>
+                <button class="hw-action-btn hw-btn-sound" id="hw-toggle-sound" title="Toggle V12 Sound (Press M)">
+                    <span class="hw-action-icon" id="hw-sound-icon">🔊</span>
+                    <span id="hw-sound-text">Sound: ON</span>
+                </button>
+            </div>
+
+            <div class="highway-footer-note">
+                <span>Hold [SPACE] or Click V-MAX for 340 km/h Bi-Turbo Kickdown &bull; Press [M] to Mute Sound &bull; Press [ESC] to Exit</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Benchmark Comparator Modal -->
+    <div class="modal-overlay" id="benchmark-modal" aria-hidden="true">
+        <div class="modal-card benchmark-card">
+            <button class="modal-close-btn" id="modal-benchmark-close" aria-label="Close benchmark modal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="modal-header">
+                <div class="british-badge">Gaydon Dynamics Lab</div>
+                <h3>Technical Benchmark Comparator</h3>
+                <p>Comparative engineering data across Aston Martin's ultimate series bloodline.</p>
+            </div>
+
+            <!-- Model Benchmark Cards Grid -->
+            <div class="benchmark-models-grid">
+                <div class="benchmark-col active" id="bench-col-dbs">
+                    <div class="bench-car-tag">Current Model</div>
+                    <h4>DBS Superleggera</h4>
+                    <span class="bench-hero-stat">715 BHP &bull; 900 Nm</span>
+                </div>
+                <div class="benchmark-col" id="bench-col-770">
+                    <div class="bench-car-tag">Flagship Finale</div>
+                    <h4>DBS 770 Ultimate</h4>
+                    <span class="bench-hero-stat">770 BHP &bull; 900 Nm</span>
+                </div>
+                <div class="benchmark-col" id="bench-col-vantage">
+                    <div class="bench-car-tag">Agile Thoroughbred</div>
+                    <h4>Vantage V12</h4>
+                    <span class="bench-hero-stat">700 BHP &bull; 753 Nm</span>
+                </div>
+            </div>
+
+            <!-- Comparative Progress Bars -->
+            <div class="benchmark-metrics-list">
+                <div class="metric-row">
+                    <div class="metric-header">
+                        <span>Max Power Output</span>
+                        <strong id="metric-power-val">715 BHP vs 770 BHP (+55)</strong>
+                    </div>
+                    <div class="metric-bar-track">
+                        <div class="metric-bar-fill fill-gold" style="width: 93%;"></div>
+                    </div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-header">
+                        <span>0–100 km/h Sprint</span>
+                        <strong id="metric-sprint-val">3.40s vs 3.20s (-0.2s)</strong>
+                    </div>
+                    <div class="metric-bar-track">
+                        <div class="metric-bar-fill fill-red" style="width: 94%;"></div>
+                    </div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-header">
+                        <span>Peak Aerodynamic Downforce</span>
+                        <strong id="metric-aero-val">180 kg vs 250 kg</strong>
+                    </div>
+                    <div class="metric-bar-track">
+                        <div class="metric-bar-fill fill-cyan" style="width: 72%;"></div>
+                    </div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-header">
+                        <span>Top Speed Record</span>
+                        <strong>211 MPH (340 km/h)</strong>
+                    </div>
+                    <div class="metric-bar-track">
+                        <div class="metric-bar-fill fill-gold" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
