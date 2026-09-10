@@ -5131,6 +5131,16 @@ studioAccordionHeaders.forEach(header => {
         } else {
             currentItem.classList.add('open');
             header.setAttribute('aria-expanded', 'true');
+            // Scroll the opened section into view — on mobile the sidebar is
+            // short enough that a section further down the list can expand
+            // entirely below the visible area otherwise. Runs once now (header)
+            // and again after the expand transition (body fully grown).
+            requestAnimationFrame(() => {
+                currentItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+            setTimeout(() => {
+                currentItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 380);
         }
     });
 });
