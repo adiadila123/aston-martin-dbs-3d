@@ -1068,6 +1068,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    cursor: pointer;
 }
 
 .spec-box-val {
@@ -1083,13 +1084,38 @@ body {
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Mobile-first: keep only the essential value + title visible; the
+   explanatory sentence stays hidden behind a tap so the section doesn't
+   read as a wall of text on small screens. */
+.spec-box-chevron {
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
 }
 
 .spec-box-desc {
     font-size: 0.80rem;
     color: var(--text-muted);
     line-height: 1.4;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 0;
+    transition: max-height 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease;
+}
+
+.spec-box.expanded .spec-box-desc {
+    max-height: 120px;
+    opacity: 1;
     margin-top: 4px;
+}
+
+.spec-box.expanded .spec-box-chevron {
+    transform: rotate(180deg);
 }
 
 /* Craft Showcase (Mobile Base: 1 Column) */
@@ -1189,6 +1215,51 @@ body {
     text-align: left;
     padding: 0;
     width: 100%;
+}
+
+/* Mobile-first: only the 4 headline specs show by default; the rest stay
+   behind a "view full specifications" tap to avoid a long, dense list.
+   (Selectors match ".specs-table tr" specificity so they can actually
+   override the base mobile-stacked-row display rule above.) */
+.specs-table tr.spec-row-extra {
+    display: none;
+}
+
+.specs-table-panel.expanded .specs-table tr.spec-row-extra {
+    display: block;
+}
+
+.btn-specs-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 100px;
+    color: var(--gold);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.btn-specs-toggle:hover {
+    background: rgba(212, 175, 55, 0.16);
+    border-color: rgba(212, 175, 55, 0.5);
+}
+
+.specs-toggle-chevron {
+    transition: transform 0.3s ease;
+}
+
+.specs-table-panel.expanded .specs-toggle-chevron {
+    transform: rotate(180deg);
 }
 
 /* Commission Final CTA */
@@ -2447,6 +2518,25 @@ input:checked + .slider::before {
         max-width: 820px;
         padding: 28px 32px;
         margin-top: 36px;
+    }
+    /* Tablet & up: no need to hide content, room enough to show it all */
+    .specs-table tr.spec-row-extra {
+        display: table-row;
+    }
+    .btn-specs-toggle {
+        display: none;
+    }
+    .spec-box {
+        cursor: default;
+    }
+    .spec-box-chevron {
+        display: none;
+    }
+    .spec-box-desc {
+        max-height: none;
+        opacity: 1;
+        overflow: visible;
+        margin-top: 4px;
     }
     .commission-card {
         max-width: 820px;

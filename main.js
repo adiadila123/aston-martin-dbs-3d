@@ -4288,18 +4288,13 @@ function exitHighwayMode() {
         carModel.rotation.set(0, 0, 0);
     }
 
-    if (engineSystem) {
-        engineSystem.targetRpm = 950;
+    if (engineSystem && engineSystem.isRunning) {
+        engineSystem.stop();
     }
 
     if (tachoHud) {
-        if (engineSystem && engineSystem.isRunning) {
-            tachoHud.classList.add('active');
-            tachoHud.setAttribute('aria-hidden', 'false');
-        } else {
-            tachoHud.classList.remove('active');
-            tachoHud.setAttribute('aria-hidden', 'true');
-        }
+        tachoHud.classList.remove('active');
+        tachoHud.setAttribute('aria-hidden', 'true');
     }
 
     openStudioModal();
@@ -5139,3 +5134,36 @@ studioAccordionHeaders.forEach(header => {
         }
     });
 });
+
+// ==========================================
+// 27. MOBILE TEXT DENSITY: TAP-TO-REVEAL SPECS
+// ==========================================
+// Below 641px the spec boxes and the full specs table hide their
+// secondary text by default (see CSS) so the page doesn't read as a wall
+// of text; these handlers just flip the "expanded" state on tap/keypress.
+// Above that breakpoint CSS forces everything visible and these classes
+// have no visual effect, so no width check is needed here.
+document.querySelectorAll('.spec-box').forEach((box) => {
+    const toggle = () => {
+        const isExpanded = box.classList.toggle('expanded');
+        box.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+    };
+    box.addEventListener('click', toggle);
+    box.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggle();
+        }
+    });
+});
+
+const btnSpecsToggle = document.getElementById('btn-specs-toggle');
+const specsTablePanel = document.getElementById('specs-table-panel');
+if (btnSpecsToggle && specsTablePanel) {
+    btnSpecsToggle.addEventListener('click', () => {
+        const isExpanded = specsTablePanel.classList.toggle('expanded');
+        btnSpecsToggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+        const label = btnSpecsToggle.querySelector('.btn-specs-toggle-label');
+        if (label) label.textContent = isExpanded ? 'Ascunde specificațiile' : 'Vezi specificațiile complete';
+    });
+}
